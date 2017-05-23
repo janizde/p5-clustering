@@ -68,31 +68,48 @@ export default function createSketch(config) {
       }
     };
 
-    let lastMousePointPosition = null;
-    s.mousePressed = () => {
-      const pos = s.createVector(s.mouseX, s.mouseY);
-      points.push(new Point(pos));
-      lastMousePointPosition = pos;
-    };
+    /**
+     * Mouse actions
+     */
+    (() => {
+      const validatePos = pos => pos.x >= 0 && pos.x <= CANVAS_SIZE && pos.y >= 0 && pos.y <= CANVAS_SIZE;
 
-    s.mouseMoved = () => {
-      if (!lastMousePointPosition) {
-        return;
-      }
+      let lastMousePointPosition = null;
+      s.mousePressed = () => {
+        const pos = s.createVector(s.mouseX, s.mouseY);
 
-      const pos = s.createVector(s.mouseX, s.mouseY);
+        if (!validatePos(pos)) {
+          return;
+        }
 
-      if (pos.dist(lastMousePointPosition) < 15) {
-        return;
-      }
+        points.push(new Point(pos));
+        lastMousePointPosition = pos;
+      };
 
-      points.push(new Point(pos));
-      lastMousePointPosition = pos;
-    };
+      s.mouseMoved = () => {
+        if (!lastMousePointPosition) {
+          return;
+        }
 
-    s.mouseReleased = () => {
-      lastMousePointPosition = null;
-    };
+        const pos = s.createVector(s.mouseX, s.mouseY);
+
+        if (!validatePos(pos)) {
+          return;
+        }
+
+        if (pos.dist(lastMousePointPosition) < 15) {
+          return;
+        }
+
+        points.push(new Point(pos));
+        lastMousePointPosition = pos;
+      };
+
+      s.mouseReleased = () => {
+        lastMousePointPosition = null;
+      };
+
+    })();
 
     const createRandomPoints = () => {
       for (let i = 0; i < NUM_POINTS; ++i) {
