@@ -1,7 +1,7 @@
 export default function (s) {
   return class Point {
 
-    static OPACITY = 150;
+    static OPACITY = 200;
 
     constructor(pos) {
       this.pos = pos;

@@ -1,3 +1,4 @@
+import State from './State';
 import createPointClass from './Point';
 import createClusterClass from './Cluster';
 
@@ -8,22 +9,39 @@ export default function sketch(s) {
   const clusters = [];
   const points = [];
   const k = 5;
-  const numPoints = 2000;
+  const numPoints = 30;
 
-  const width = 500;
-  const height = 500;
+  const width = 750;
+  const height = 750;
 
   const actionsPerFrame = 10;
+
+  const state = new State(['CREATE_POINTS', 'CREATE_CLUSTERS', 'DO_CLUSTERING', 'FINISHED']);
 
   let generator;
 
   s.setup = () => {
     s.createCanvas(width, height);
 
-    createPoints();
-    createClusters();
+    state.on('ENTER_CREATE_CLUSTERS', () => {
+      createClusters();
+      state.next();
+    });
 
-    generator = runner();
+    state.on('ENTER_DO_CLUSTERING', () => {
+      generator = clusterer();
+    });
+
+    state.on('ENTER_CREATE_POINTS', () => {
+      createRandomPoints();
+    });
+
+    const btnFinishPoints = s.createButton('Finish setting points');
+    btnFinishPoints.mousePressed(() => {
+      state.nextIfCurrent('CREATE_POINTS');
+    });
+
+    state.init();
   };
 
   s.draw = () => {
@@ -31,17 +49,40 @@ export default function sketch(s) {
     points.forEach(p => p.draw());
     clusters.forEach(c => c.draw());
 
-
-    for (let i = 0; i < actionsPerFrame; ++i) {
-      const result = generator.next();
-      if (result.done === true) {
-        s.noLoop();
-        break;
+    if (state.isCurrent('DO_CLUSTERING')) {
+      for (let i = 0; i < actionsPerFrame; ++i) {
+        generator.next();
       }
     }
   };
 
-  const createPoints = () => {
+  let lastMousePointPosition = null;
+  s.mousePressed = () => {
+    const pos = s.createVector(s.mouseX, s.mouseY);
+    points.push(new Point(pos));
+    lastMousePointPosition = pos;
+  };
+
+  s.mouseMoved = () => {
+    if (!lastMousePointPosition) {
+      return;
+    }
+
+    const pos = s.createVector(s.mouseX, s.mouseY);
+
+    if (pos.dist(lastMousePointPosition) < 15) {
+      return;
+    }
+
+    points.push(new Point(pos));
+    lastMousePointPosition = pos;
+  };
+
+  s.mouseReleased = () => {
+    lastMousePointPosition = null;
+  };
+
+  const createRandomPoints = () => {
     for (let i = 0; i < numPoints; ++i) {
       const x = s.random(width);
       const y = s.random(height);
@@ -114,12 +155,10 @@ export default function sketch(s) {
     }
   }
 
-  function* runner () {
-    let changes = 0;
+  function* clusterer () {
     do {
       yield* updateClusterCenters();
-      changes = yield* assignPoints();
-      console.log(`${changes} changes`);
-    } while (changes > 0);
+      yield* assignPoints();
+    } while (true);
   }
 }
