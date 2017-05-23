@@ -2683,6 +2683,10 @@ querystringify@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/querystringify/-/querystringify-1.0.0.tgz#6286242112c5b712fa654e526652bf6a13ff05cb"
 
+quicksettings@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/quicksettings/-/quicksettings-3.0.1.tgz#2ecb8b5ec78ddb3e2e0e3b9b7f1e509e6c4c8004"
+
 quote-stream@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/quote-stream/-/quote-stream-1.0.2.tgz#84963f8c9c26b942e153feeb53aae74652b7e0b2"
