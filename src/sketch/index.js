@@ -4,7 +4,8 @@ import createClusterClass from './Cluster';
 
 export const defaultConfig = {
   NUM_CLUSTERS: 5,
-  NUM_POINTS: 50,
+  NUM_POINTS: 1000,
+  NUM_HOTSPOTS: 5,
   ACTIONS_PER_FRAME: 10,
   CANVAS_SIZE: 750,
 };
@@ -17,6 +18,7 @@ export default function createSketch(config) {
   const {
     NUM_CLUSTERS,
     NUM_POINTS,
+    NUM_HOTSPOTS,
     ACTIONS_PER_FRAME,
     CANVAS_SIZE,
   } = config;
@@ -26,12 +28,15 @@ export default function createSketch(config) {
     const Cluster = createClusterClass(s);
 
     const clusters = [];
-    const points = [];
+    let points = [];
 
     const state = new State(['CREATE_POINTS', 'CREATE_CLUSTERS', 'DO_CLUSTERING', 'FINISHED']);
 
     let generator;
 
+    /**
+     * SETUP
+     */
     s.setup = () => {
       s.createCanvas(CANVAS_SIZE, CANVAS_SIZE);
 
@@ -45,7 +50,11 @@ export default function createSketch(config) {
       });
 
       state.on('ENTER_CREATE_POINTS', () => {
-        createRandomPoints();
+        if (NUM_HOTSPOTS >= 1) {
+          points = Point.createHotspotPoints(NUM_POINTS, NUM_HOTSPOTS);
+        } else {
+          points = Point.createRandomPoints(NUM_POINTS);
+        }
       });
 
       const btnFinishPoints = s.createButton('Finish setting points');
@@ -56,6 +65,9 @@ export default function createSketch(config) {
       state.init();
     };
 
+    /**
+     * DRAW
+     */
     s.draw = () => {
       s.background(0);
       points.forEach(p => p.draw());
@@ -110,14 +122,6 @@ export default function createSketch(config) {
       };
 
     })();
-
-    const createRandomPoints = () => {
-      for (let i = 0; i < NUM_POINTS; ++i) {
-        const x = s.random(CANVAS_SIZE);
-        const y = s.random(CANVAS_SIZE);
-        points.push(new Point(s.createVector(x, y)));
-      }
-    };
 
     const createClusters = () => {
       s.colorMode(s.HSB, 255, 255, 255, 255);
