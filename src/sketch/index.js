@@ -38,11 +38,13 @@ export default function createSketch(config) {
      * SETUP
      */
     s.setup = () => {
-      s.createCanvas(CANVAS_SIZE, CANVAS_SIZE);
+      const canvas = s.createCanvas(CANVAS_SIZE, CANVAS_SIZE);
+      canvas.parent('canvas-container');
+
+      setupControls();
 
       state.on('ENTER_CREATE_CLUSTERS', () => {
         createClusters();
-        state.next();
       });
 
       state.on('ENTER_DO_CLUSTERING', () => {
@@ -88,6 +90,11 @@ export default function createSketch(config) {
 
       let lastMousePointPosition = null;
       s.mousePressed = () => {
+        if (state.isCurrent('CREATE_CLUSTERS')) {
+          maybeCreateCluster(s.mouseX, s.mouseY);
+          return;
+        }
+
         const pos = s.createVector(s.mouseX, s.mouseY);
 
         if (!validatePos(pos)) {
@@ -99,6 +106,10 @@ export default function createSketch(config) {
       };
 
       s.mouseMoved = () => {
+        if (state.isCurrent('CREATE_CLUSTERS')) {
+          return;
+        }
+
         if (!lastMousePointPosition) {
           return;
         }
@@ -129,6 +140,20 @@ export default function createSketch(config) {
         const color = s.color(i * 73 % 256, 255, 255);
         const center = points[Math.floor(s.random(points.length))];
         clusters.push(new Cluster(center.pos, color));
+      }
+      s.colorMode(s.RGB, 255, 255, 255, 255);
+    };
+
+    const maybeCreateCluster = (x, y) => {
+      const pos = s.createVector(x, y);
+
+      s.colorMode(s.HSB, 255, 255, 255, 255);
+      for (let p of points) {
+        if (pos.dist(p.pos) < 5) {
+          const color = s.color(s.random(230), 255, 255, 255);
+          clusters.push(new Cluster(p.pos, color));
+          break;
+        }
       }
       s.colorMode(s.RGB, 255, 255, 255, 255);
     };
@@ -194,6 +219,42 @@ export default function createSketch(config) {
         yield* assignPoints();
       } while (true);
     }
+
+    function setupControls() {
+      const instruction = s.createP();
+      instruction.parent('#controls');
+      const buttonNext = s.createButton();
+      buttonNext.parent('#controls');
+
+      let onClick = () => {};
+
+      buttonNext.mousePressed(() => {
+        if (onClick) {
+          onClick();
+        }
+      });
+
+      state.on('ENTER_CREATE_POINTS', () => {
+        instruction.html('Click in the canvas or drag the mouse to create new points.');
+        buttonNext.html('Finish creating points');
+        onClick = () => {
+          state.nextIfCurrent('CREATE_POINTS');
+        };
+      });
+
+      state.on('ENTER_CREATE_CLUSTERS', () => {
+        instruction.html('Click on points in the canvas to make them the center of a new cluster.');
+        buttonNext.html('Start clustering');
+        onClick = () => {
+          state.nextIfCurrent('CREATE_CLUSTERS');
+        };
+      });
+
+      state.on('ENTER_DO_CLUSTERING', () => {
+        instruction.html('You can still click or drag the mouse in the canvas to create new points.');
+        buttonNext.remove();
+        onClick = () => {};
+      });
+    }
   };
 }
-
