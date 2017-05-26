@@ -101,6 +101,43 @@ export default function (s) {
       return min;
     }
 
+    proximityCompleteLink(other, matrix) {
+      const thisPoints = this.points;
+      const otherPoints = other.points;
+
+      let max = 0;
+      for (let i = 0; i < thisPoints.length; ++i) {
+        const pi = thisPoints[i];
+        for (let j = 0; j < otherPoints.length; ++j) {
+          const pj = otherPoints[j];
+          const prox = matrix.get(pi.id, pj.id);
+
+          if (prox > max) {
+            max = prox;
+          }
+        }
+      }
+
+      return max;
+    }
+
+    proximityAverage(other, matrix) {
+      let sum = 0;
+      for (let i = 0; i < this.points.length; ++i) {
+        const pi = this.points[i];
+        for (let j = 0; j < other.points.length; ++j) {
+          const pj = other.points[j];
+          sum += matrix.get(pi.id, pj.id);
+        }
+      }
+
+      return sum / (this.points.length * other.points.length);
+    }
+
+    proximityCentroid(other) {
+      return this.center.dist(other.center);
+    }
+
     static createInitialClusters(points) {
       s.colorMode(s.HSB, 255, 255, 255, 255);
       const clusters = points.map(p => {

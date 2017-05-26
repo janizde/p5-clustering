@@ -88,7 +88,7 @@ export default function createSketch(config) {
             const ci = parentClusters[i];
             const cj = parentClusters[j];
 
-            const prox = ci.proximitySingleLink(cj, proximityMatrix);
+            const prox = ci.proximityCentroid(cj, proximityMatrix);
             if (prox < closest.prox) {
               closest = { i, j, prox };
             }
