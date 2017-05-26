@@ -3,7 +3,8 @@ export default function (s) {
 
     static OPACITY = 200;
 
-    constructor(pos) {
+    constructor(pos, id = null) {
+      this.id = id;
       this.pos = pos;
       this.cluster = null;
     };
@@ -34,7 +35,7 @@ export default function (s) {
       for (let i = 0; i < numPoints; ++i) {
         const x = s.random(s.width);
         const y = s.random(s.height);
-        points.push(new Point(s.createVector(x, y)));
+        points.push(new Point(s.createVector(x, y), points.length));
       }
 
       return points;
@@ -66,7 +67,7 @@ export default function (s) {
       const points = [];
       for (let added = 0; added < numPoints;) {
         if (s.random() < .05) {
-          points.push(new Point(s.createVector(s.random(s.width), s.random(s.height))));
+          points.push(new Point(s.createVector(s.random(s.width), s.random(s.height)), points.length));
           added++;
           continue;
         }
@@ -87,7 +88,7 @@ export default function (s) {
           h.pos.y + direction.y
         );
 
-        points.push(new Point(pos));
+        points.push(new Point(pos, points.length));
         added++;
       }
 

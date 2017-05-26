@@ -1,8 +1,11 @@
 import Quicksettings from 'quicksettings';
 
-import { defaultConfig } from './../sketch';
+import { defaultConfig } from './../k-means';
 
 export default function createControls(onUpdate) {
+  // TODO: re-enable
+  return;
+
   const config = {
     ...defaultConfig,
   };

@@ -1,6 +1,6 @@
-import State from './State';
-import createPointClass from './Point';
-import createClusterClass from './Cluster';
+import State from './../common/State';
+import createPointClass from './../common/Point';
+import createClusterClass from './../common/Cluster';
 
 export const defaultConfig = {
   NUM_CLUSTERS: 5,
@@ -91,7 +91,7 @@ export default function createSketch(config) {
       let lastMousePointPosition = null;
       s.mousePressed = () => {
         if (state.isCurrent('CREATE_CLUSTERS')) {
-          maybeCreateCluster(s.mouseX, s.mouseY);
+          createCustomCluster(s.mouseX, s.mouseY);
           return;
         }
 
@@ -144,17 +144,11 @@ export default function createSketch(config) {
       s.colorMode(s.RGB, 255, 255, 255, 255);
     };
 
-    const maybeCreateCluster = (x, y) => {
-      const pos = s.createVector(x, y);
-
+    const createCustomCluster = (x, y) => {
       s.colorMode(s.HSB, 255, 255, 255, 255);
-      for (let p of points) {
-        if (pos.dist(p.pos) < 5) {
-          const color = s.color(s.random(230), 255, 255, 255);
-          clusters.push(new Cluster(p.pos, color));
-          break;
-        }
-      }
+      const pos = s.createVector(x, y);
+      const color = s.color(s.random(230), 255, 255, 255);
+      clusters.push(new Cluster(pos, color));
       s.colorMode(s.RGB, 255, 255, 255, 255);
     };
 
