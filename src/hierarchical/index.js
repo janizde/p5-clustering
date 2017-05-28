@@ -8,6 +8,8 @@ export const defaultConfig = {
   NUM_POINTS: 0,
   NUM_HOTSPOTS: 5,
   NUM_CLUSTERS: 5,
+  DRAW_MODE: 'CIRCLES',
+  PROXIMITY_METHOD: 'SINGLE_LINK',
 };
 
 export function createDefaultSketch() {
@@ -20,6 +22,8 @@ export default function createSketch(config) {
     NUM_POINTS,
     NUM_HOTSPOTS,
     NUM_CLUSTERS,
+    DRAW_MODE,
+    PROXIMITY_METHOD,
   } = config;
 
   return function (s) {
@@ -68,7 +72,7 @@ export default function createSketch(config) {
       if (state.isCurrent('CREATE_POINTS')) {
         points.forEach(p => p.draw());
       } else {
-        parentClusters.forEach(c => c.draw());
+        parentClusters.forEach(c => c.draw(null, DRAW_MODE));
         generator.next();
       }
     };
@@ -86,7 +90,25 @@ export default function createSketch(config) {
             const ci = parentClusters[i];
             const cj = parentClusters[j];
 
-            const prox = ci.proximitySingleLink(cj, proximityMatrix);
+            let prox;
+            switch (PROXIMITY_METHOD) {
+              case 'COMPLETE_LINK':
+                prox = ci.proximityCompleteLink(cj, proximityMatrix);
+                break;
+
+              case 'AVERAGE':
+                prox = ci.proximityAverage(cj, proximityMatrix);
+                break;
+
+              case 'CENTROIDS':
+                prox = ci.proximityCentroid(cj);
+                break;
+
+              default:
+                prox = ci.proximitySingleLink(cj, proximityMatrix);
+                break;
+            }
+
             if (prox < closest.prox) {
               closest = { i, j, prox };
             }

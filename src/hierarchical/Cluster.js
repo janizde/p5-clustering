@@ -40,30 +40,37 @@ export default function (s) {
       return this.points.reduce((r, p) => Math.max(r, p.pos.dist(this.center)), 0);
     }
 
-    draw() {
+    draw(color = null, drawMode) {
+      color = drawMode === 'CIRCLES' || color === null
+        ? this.color
+        : color;
+
       if (this.point) {
-        s.fill(this.color);
+        s.fill(color);
         s.ellipse(this.point.pos.x, this.point.pos.y, 5, 5);
       } else {
-        s.fill(s.color(
-          s.red(this.color),
-          s.green(this.color),
-          s.blue(this.color),
-          50
-        ));
+        if (drawMode === 'CIRCLES') {
+          s.fill(s.color(
+            s.red(color),
+            s.green(color),
+            s.blue(color),
+            50
+          ));
 
-        s.ellipseMode(s.RADIUS);
-        s.ellipse(this.center.x, this.center.y, this.radius, this.radius);
-        s.ellipseMode(s.CENTER);
+          s.ellipseMode(s.RADIUS);
+          s.ellipse(this.center.x, this.center.y, this.radius, this.radius);
+          s.ellipseMode(s.CENTER);
+        }
 
-        this.children.forEach(c => c.draw());
+        this.children.forEach(c => c.draw(color, drawMode));
       }
     }
 
     merge(other) {
       s.colorMode(s.HSB, 255, 255, 255, 255);
+      const mostPoints = this.points.length > other.points.length ? this : other;
       const color = s.color(
-        (s.hue(this.color) + s.hue(other.color)) / 2,
+        s.hue(mostPoints.color),
         255,
         255,
         255,
