@@ -4,10 +4,10 @@ import createPointClass from './../common/Point';
 import createClusterClass from './Cluster';
 
 export const defaultConfig = {
-  CANVAS_SIZE: 500,
-  NUM_POINTS: 300,
+  CANVAS_SIZE: 750,
+  NUM_POINTS: 0,
   NUM_HOTSPOTS: 5,
-  ACTIONS_PER_FRAME: 10,
+  NUM_CLUSTERS: 5,
 };
 
 export function createDefaultSketch() {
@@ -19,7 +19,7 @@ export default function createSketch(config) {
     CANVAS_SIZE,
     NUM_POINTS,
     NUM_HOTSPOTS,
-    ACTIONS_PER_FRAME,
+    NUM_CLUSTERS,
   } = config;
 
   return function (s) {
@@ -69,14 +69,12 @@ export default function createSketch(config) {
         points.forEach(p => p.draw());
       } else {
         parentClusters.forEach(c => c.draw());
-        //for (let i = 0; i < ACTIONS_PER_FRAME; ++i) {
-          generator.next();
-        //}
+        generator.next();
       }
     };
 
     function* clusterer() {
-      while (parentClusters.length > 10) {
+      while (parentClusters.length > NUM_CLUSTERS) {
         let closest = {
           i: null,
           j: null,
@@ -88,7 +86,7 @@ export default function createSketch(config) {
             const ci = parentClusters[i];
             const cj = parentClusters[j];
 
-            const prox = ci.proximityCentroid(cj, proximityMatrix);
+            const prox = ci.proximitySingleLink(cj, proximityMatrix);
             if (prox < closest.prox) {
               closest = { i, j, prox };
             }

@@ -3,13 +3,41 @@
 <head>
   <meta charset="utf-8">
   <title>p5-clustering</title>
+
+  <style type="text/css">
+    #app {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+    }
+
+    #sketch, #quicksettings {
+      display: flex;
+      flex-direction: column;
+    }
+
+    #controls {
+      margin-bottom: 1rem;
+    }
+
+    #quicksettings {
+      margin-left: 1rem;
+    }
+
+    #quicksettings .qs_main {
+      position: static;
+    }
+  </style>
 </head>
 <body>
-
-  <div class="app">
-    <div id="controls">
-    </div>
-    <div id="canvas-container"></div>
+  <div id="app">
+    <section id="sketch">
+      <div id="controls">
+      </div>
+      <div id="canvas-container"></div>
+    </section>
+    <section id="quicksettings">
+    </section>
   </div>
 </body>
 </html>
