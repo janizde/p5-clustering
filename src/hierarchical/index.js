@@ -33,9 +33,9 @@ export default function createSketch(config) {
 
     let points = [];
     let clusters = [];
-    let parentClusters = [];
     let generator;
     let proximityMatrix = null;
+    let clustersLabel = null;
 
     s.setup = () => {
       const canvas = s.createCanvas(CANVAS_SIZE, CANVAS_SIZE);
@@ -57,8 +57,10 @@ export default function createSketch(config) {
 
       state.on('LEAVE_CREATE_POINTS', () => {
         clusters = Cluster.createInitialClusters(points);
-        parentClusters = clusters.slice();
         proximityMatrix = ProximityMatrix.createFromPoints(points);
+
+        clustersLabel = s.createP();
+        clustersLabel.parent('controls');
       });
 
       state.init();
@@ -72,23 +74,24 @@ export default function createSketch(config) {
       if (state.isCurrent('CREATE_POINTS')) {
         points.forEach(p => p.draw());
       } else {
-        parentClusters.forEach(c => c.draw(null, DRAW_MODE));
+        clusters.forEach(c => c.draw(null, DRAW_MODE));
+        clustersLabel.html(`${clusters.length} Clusters`);
         generator.next();
       }
     };
 
     function* clusterer() {
-      while (parentClusters.length > NUM_CLUSTERS) {
+      while (clusters.length > NUM_CLUSTERS) {
         let closest = {
           i: null,
           j: null,
           prox: Infinity,
         };
 
-        for (let i = 0; i < parentClusters.length; ++i) {
+        for (let i = 0; i < clusters.length; ++i) {
           for (let j = 0; j < i; ++j) {
-            const ci = parentClusters[i];
-            const cj = parentClusters[j];
+            const ci = clusters[i];
+            const cj = clusters[j];
 
             let prox;
             switch (PROXIMITY_METHOD) {
@@ -115,12 +118,12 @@ export default function createSketch(config) {
           }
         }
 
-        const ci = parentClusters[closest.i];
-        const cj = parentClusters[closest.j];
+        const ci = clusters[closest.i];
+        const cj = clusters[closest.j];
         const merged = ci.merge(cj);
-        parentClusters.splice(closest.i, 1);
-        parentClusters.splice(closest.j, 1);
-        parentClusters.push(merged);
+        clusters.splice(closest.i, 1);
+        clusters.splice(closest.j, 1);
+        clusters.push(merged);
 
         yield true;
       }
