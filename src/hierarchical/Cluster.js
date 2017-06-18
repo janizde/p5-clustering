@@ -40,13 +40,14 @@ export default function (s) {
       return this.points.reduce((r, p) => Math.max(r, p.pos.dist(this.center)), 0);
     }
 
-    draw(color = null, drawMode) {
+    draw(color = null, drawMode, drawShape = false) {
       color = drawMode === 'CIRCLES' || color === null
         ? this.color
         : color;
 
       if (this.point) {
         s.fill(color);
+        s.noStroke();
         s.ellipse(this.point.pos.x, this.point.pos.y, 5, 5);
       } else {
         if (drawMode === 'CIRCLES') {
@@ -63,6 +64,18 @@ export default function (s) {
         }
 
         this.children.forEach(c => c.draw(color, drawMode));
+
+        if (drawShape) {
+          if (this.parent) { console.log(this); }
+          s.noFill();
+          s.stroke(this.color);
+          s.strokeWeight(2);
+          s.ellipseMode(s.RADIUS);
+          s.ellipse(this.center.x, this.center.y, this.radius);
+          s.ellipseMode(s.CENTER);
+          s.noStroke();
+          s.strokeWeight(0);
+        }
       }
     }
 

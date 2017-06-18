@@ -29,7 +29,7 @@ export default function createSketch(config) {
   return function (s) {
     const Point = createPointClass(s);
     const Cluster = createClusterClass(s);
-    const state = new State(['CREATE_POINTS', 'DO_CLUSTERING']);
+    const state = new State(['CREATE_POINTS', 'DO_CLUSTERING', 'FINISHED_CLUSTERING']);
 
     let points = [];
     let clusters = [];
@@ -74,7 +74,8 @@ export default function createSketch(config) {
       if (state.isCurrent('CREATE_POINTS')) {
         points.forEach(p => p.draw());
       } else {
-        clusters.forEach(c => c.draw(null, DRAW_MODE));
+        const drawShape = DRAW_MODE === 'COLORS' && state.isCurrent('FINISHED_CLUSTERING');
+        clusters.forEach(c => c.draw(null, DRAW_MODE, drawShape));
         clustersLabel.html(`${clusters.length} Clusters`);
         generator.next();
       }
@@ -127,6 +128,8 @@ export default function createSketch(config) {
 
         yield true;
       }
+
+      state.next();
     }
 
     /**
