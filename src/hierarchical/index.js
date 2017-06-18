@@ -35,6 +35,7 @@ export default function createSketch(config) {
     let clusters = [];
     let generator;
     let proximityMatrix = null;
+    let clusterProximityMatrix = null;
     let clustersLabel = null;
 
     s.setup = () => {
@@ -58,6 +59,7 @@ export default function createSketch(config) {
       state.on('LEAVE_CREATE_POINTS', () => {
         clusters = Cluster.createInitialClusters(points);
         proximityMatrix = ProximityMatrix.createFromPoints(points);
+        clusterProximityMatrix = new ProximityMatrix();
 
         clustersLabel = s.createP();
         clustersLabel.parent('controls');
@@ -94,23 +96,28 @@ export default function createSketch(config) {
             const ci = clusters[i];
             const cj = clusters[j];
 
-            let prox;
-            switch (PROXIMITY_METHOD) {
-              case 'COMPLETE_LINK':
-                prox = ci.proximityCompleteLink(cj, proximityMatrix);
-                break;
+            let prox = clusterProximityMatrix.get(ci.id, cj.id);
 
-              case 'AVERAGE':
-                prox = ci.proximityAverage(cj, proximityMatrix);
-                break;
+            if (prox === null) {
+              switch (PROXIMITY_METHOD) {
+                case 'COMPLETE_LINK':
+                  prox = ci.proximityCompleteLink(cj, proximityMatrix);
+                  break;
 
-              case 'CENTROIDS':
-                prox = ci.proximityCentroid(cj);
-                break;
+                case 'AVERAGE':
+                  prox = ci.proximityAverage(cj, proximityMatrix);
+                  break;
 
-              default:
-                prox = ci.proximitySingleLink(cj, proximityMatrix);
-                break;
+                case 'CENTROIDS':
+                  prox = ci.proximityCentroid(cj);
+                  break;
+
+                default:
+                  prox = ci.proximitySingleLink(cj, proximityMatrix);
+                  break;
+              }
+
+              clusterProximityMatrix.set(ci.id, cj.id, prox);
             }
 
             if (prox < closest.prox) {

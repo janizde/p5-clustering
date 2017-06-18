@@ -1,6 +1,16 @@
 export default function (s) {
+
+  function* clusterIdsGenerator () {
+    for (let i = 0; true; ++i) {
+      yield i;
+    }
+  }
+
+  const clusterIds = clusterIdsGenerator();
+
   return class Cluster {
     constructor(color, point = null) {
+      this.id = clusterIds.next().value;
       this.color = color;
       this.children = [];
       this.parent = null;
