@@ -43,7 +43,7 @@ export default class State extends EventEmitter {
       this.emit(`LEAVE_${this.states[currentIdx].id}`);
     }
 
-    if (currentIdx + 2 >= this.states.length) {
+    if (currentIdx + 2 > this.states.length) {
       this.isFinished = true;
       this.emit('FINISHED');
       return;
