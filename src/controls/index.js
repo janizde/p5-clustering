@@ -82,6 +82,7 @@ export default function createControls(onUpdate) {
   settings.addRange('NUM_CLUSTERS', 0, 100, 5, 1, createUpdateCallback('NUM_CLUSTERS'));
   settings.addRange('NUM_POINTS', 0, 5000, 200, 10, createUpdateCallback('NUM_POINTS'));
   settings.addRange('NUM_HOTSPOTS', 0, 20, 5, 1, createUpdateCallback('NUM_HOTSPOTS'));
+  settings.addRange('HOTSPOT_NOISE', 0, 1, .05, .01, createUpdateCallback('HOTSPOT_NOISE'));
   settings.addRange('ACTIONS_PER_FRAME', 1, 20, 10, 1, createUpdateCallback('ACTIONS_PER_FRAME'));
   settings.addRange('CANVAS_SIZE', 500, 1000, 500, 10, createUpdateCallback('CANVAS_SIZE'));
 

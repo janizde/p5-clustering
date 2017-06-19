@@ -7,6 +7,7 @@ export const defaultConfig = {
   CANVAS_SIZE: 750,
   NUM_POINTS: 0,
   NUM_HOTSPOTS: 5,
+  HOTSPOT_NOISE: .05,
   NUM_CLUSTERS: 5,
   DRAW_MODE: 'CIRCLES',
   PROXIMITY_METHOD: 'SINGLE_LINK',
@@ -21,6 +22,7 @@ export default function createSketch(config) {
     CANVAS_SIZE,
     NUM_POINTS,
     NUM_HOTSPOTS,
+    HOTSPOT_NOISE,
     NUM_CLUSTERS,
     DRAW_MODE,
     PROXIMITY_METHOD,
@@ -52,7 +54,7 @@ export default function createSketch(config) {
         if (NUM_HOTSPOTS < 1) {
           points = Point.createRandomPoints(NUM_POINTS);
         } else {
-          points = Point.createHotspotPoints(NUM_POINTS, NUM_HOTSPOTS);
+          points = Point.createHotspotPoints(NUM_POINTS, NUM_HOTSPOTS, HOTSPOT_NOISE);
         }
       });
 

@@ -41,7 +41,7 @@ export default function (s) {
       return points;
     }
 
-    static createHotspotPoints(numPoints, numHotspots) {
+    static createHotspotPoints(numPoints, numHotspots, noise) {
       if (numHotspots < 1) {
         return Point.createRandomPoints(numPoints);
       }
@@ -66,7 +66,7 @@ export default function (s) {
 
       const points = [];
       for (let added = 0; added < numPoints;) {
-        if (s.random() < .05) {
+        if (s.random() < noise) {
           points.push(new Point(s.createVector(s.random(s.width), s.random(s.height)), points.length));
           added++;
           continue;

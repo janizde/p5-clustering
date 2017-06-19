@@ -6,6 +6,7 @@ export const defaultConfig = {
   NUM_CLUSTERS: 5,
   NUM_POINTS: 1000,
   NUM_HOTSPOTS: 5,
+  HOTSPOT_NOISE: .05,
   ACTIONS_PER_FRAME: 10,
   CANVAS_SIZE: 750,
 };
@@ -19,6 +20,7 @@ export default function createSketch(config) {
     NUM_CLUSTERS,
     NUM_POINTS,
     NUM_HOTSPOTS,
+    HOTSPOT_NOISE,
     ACTIONS_PER_FRAME,
     CANVAS_SIZE,
   } = config;
@@ -53,7 +55,7 @@ export default function createSketch(config) {
 
       state.on('ENTER_CREATE_POINTS', () => {
         if (NUM_HOTSPOTS >= 1) {
-          points = Point.createHotspotPoints(NUM_POINTS, NUM_HOTSPOTS);
+          points = Point.createHotspotPoints(NUM_POINTS, NUM_HOTSPOTS, HOTSPOT_NOISE);
         } else {
           points = Point.createRandomPoints(NUM_POINTS);
         }
