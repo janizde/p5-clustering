@@ -76,7 +76,6 @@ export default function (s) {
         this.children.forEach(c => c.draw(color, drawMode));
 
         if (drawShape) {
-          if (this.parent) { console.log(this); }
           s.noFill();
           s.stroke(this.color);
           s.strokeWeight(2);
