@@ -6,7 +6,7 @@ This projekt visualizes the k-means clustering algorithm and hierarchical cluste
 
 ## Contents
 
-* [Background](#background)
+* [Background](#background)
 * [Implementations](#implementations)
 	* [K-means](#k-means)
 		* [General algorithm](#k-means-general)
