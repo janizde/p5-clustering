@@ -9,7 +9,7 @@
   },
   "browserslist": "defaults",
   "dependencies": {
-    "p5": "^0.5.9",
+    "p5": "^0.10.2",
     "quicksettings": "^3.0.1"
   },
   "devDependencies": {
