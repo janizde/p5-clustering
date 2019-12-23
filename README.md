@@ -1,4 +1,4 @@
-# p5 Clustering Visialization
+# p5 Clustering Visualization 🧪 🕸 [![Build Status](https://travis-ci.com/janizde/p5-clustering.svg?branch=master)](https://travis-ci.com/janizde/p5-clustering)
 
 This projekt visualizes the k-means clustering algorithm and hierarchical clustering in p5, clustering an arbitrary amount of 2D-Points.
 
