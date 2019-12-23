@@ -1,8 +1,5 @@
 export default function (s) {
-  return class Point {
-
-    static OPACITY = 200;
-
+  class Point {
     constructor(pos, id = null) {
       this.id = id;
       this.pos = pos;
@@ -95,4 +92,8 @@ export default function (s) {
       return points;
     }
   }
+  
+  Point.OPACITY = 200;
+  
+  return Point;
 }

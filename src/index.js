@@ -1,6 +1,6 @@
 import p5 from 'p5';
 import 'p5/lib/addons/p5.dom';
-import 'babel-polyfill';
+import '@babel/polyfill';
 
 import createSketchHierarchical from './hierarchical';
 import createSketchKMeans, { createDefaultSketch } from './k-means';
