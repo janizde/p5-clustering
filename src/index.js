@@ -1,5 +1,6 @@
 import p5 from 'p5';
-import '@babel/polyfill';
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 
 import createSketchHierarchical from './hierarchical';
 import createSketchKMeans, { createDefaultSketch } from './k-means';
